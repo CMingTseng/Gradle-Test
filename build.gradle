@@ -1,31 +1,35 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-println 'GradleTest build.gradle的配置阶段'
-
+println 'GradleTest root build.gradle'
 
 buildscript {
-    
     repositories {
-        println 'repositories中执行的代码'
+        println '@root buildscript repositories'
         google()
         jcenter()
     }
     dependencies {
-        println 'dependencies中执行的代码'
+        println '@root buildscript  dependencies'
         classpath 'com.android.tools.build:gradle:3.6.2'
-        
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-
 allprojects {
     repositories {
-        println 'repositories中执行的代码'
+        println '@root gradle allprojects repositories'
         google()
         jcenter()
+    }
+    beforeEvaluate { project ->
+//        println '@root allprojects beforeEvaluate can add apply plugin java for ' + project.properties
+        println '@root allprojects beforeEvaluate can add apply plugin java for '
+//        project.apply plugin: 'java'
+    }
+    afterEvaluate { project ->
+//        println '@root  allprojects afterEvaluate  ' + project.properties
+        println '@root  allprojects afterEvaluate  '
+//        project.apply plugin: 'java'
+
     }
 }
 
@@ -34,7 +38,6 @@ allprojects {
 //}
 
 apply from: rootProject.file('tasks/tasks2.gradle')
-
 
 
 //task cleanTemp(dependsOn: assemble) {
@@ -49,16 +52,22 @@ gradle.buildFinished {
 
 
 project.afterEvaluate {
-    println ' gradle.rootProject.afterEvaluate ************************* '
+    println ' gradle.rootProject.afterEvaluate ************************* :  ' + project.name
 //        assembleDebug.dependsOn cleanTemp
 }
 
 tasks.whenTaskAdded {
-       task ->
-        println 'root '+task.name+'tasks.whenTaskAdded'
+    task ->
+        println 'root : ' + task.name + ' tasks.whenTaskAdded'
+        def taskmodule = task.project
+        def taskname = task.name
+
         if (task.name.equals("assembleDebug")) {
             println 'task.name.equals  afterAssembleDebug'
-            afterAssembleDebug.dependsOn assembleDebug
+//            afterAssembleDebug.dependsOn assembleDebug
+            custsTask.dependsOn assembleDebug
+//            task.mustRunAfter afterAssembleDebug
+            myFirstTask.dependsOn assembleDebug
         }
 
         if (task.name.contains("assembleDebug")) {
@@ -67,11 +76,12 @@ tasks.whenTaskAdded {
                 println 'root getDependsOn.add doLast afterAssembleDebug'
             })
         }
+
 }
 
 gradle.taskGraph.whenReady {
     taskGraph ->
-//    println 'root gradle.taskGraph.whenReady'
+        println 'root gradle.taskGraph.whenReady'
 //    if (taskGraph.hasTask(release)) {
 //        version = '1.0'
 //    } else {
@@ -79,5 +89,22 @@ gradle.taskGraph.whenReady {
 //    }
 }
 
+task myFirstTask {
+    doFirst {
+        println "my first task is execuated"
+    }
+}
 
-println '我是顺序执行的'
+task mySecondTask {
+    doFirst {
+        println "my second task is execuated"
+    }
+}
+
+task myTask {
+    doFirst {
+        println "my task is execuated"
+    }
+}
+
+println 'run step by step'

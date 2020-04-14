@@ -1,9 +1,6 @@
-println 'app的配置阶段'
+println 'app   subproject (module) '
 apply plugin: 'com.android.application'
-println 'com.android.application中执行的代码结束'
-
-
-
+println 'com.android.application finish '
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -23,7 +20,7 @@ android {
 }
 
 dependencies {
-    println 'app.dependencies中执行的代码'
+    println '@ app dependencies '
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
@@ -32,18 +29,18 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
-println 'app.dependencies中执行的代码结束'
+println 'app.dependencies finish '
 
 task testaaa() {
-    println 'Task中的配置代码'
+    println 'Task  testaaa init'
     // 定义一个闭包
     def a = {
-        println 'Task中的配置代码2'
+        println 'Task  testaaa def var a '
     }
     // 执行闭包
     a()
     doFirst {
-        println '这段代码配置阶段不执行'
+        println 'Task  testaaa doFirst  but not run '
     }
 }
 
@@ -72,7 +69,6 @@ project.afterEvaluate {
     assembleDebug.dependsOn beforeAssembleDebug
 }
 
-
 task beforeAssembleDebug() {
     doLast {
         println 'doLast beforeAssembleDebug'
@@ -88,11 +84,13 @@ tasks.whenTaskAdded {
 ////            afterAssembleDebug.dependsOn assembleDebug
 //        }
 
-        if (task.name.contains("assembleDebug")) {
+//        if (task.name.contains("assembleDebug")) {
+        if (task.name.contains("mergeDexRelease")) {
             task.getDependsOn().add({
                 // add your logic here
                 println 'app getDependsOn doLast afterAssembleDebug'
-                afterAssembleDebug//可以直接执行这个task
+//                afterAssembleDebug//可以直接执行这个task
+                custsTask
             })
         }
 }
@@ -107,9 +105,4 @@ gradle.taskGraph.whenReady {
 //    }
 }
 
-
-
-
-
-
-println 'apply from中执行的代码结束 在配置階段執行，不在構建階段'
+println 'apply from init finish '

@@ -1,22 +1,19 @@
 //可以使用./gradlew task di简化任务名
 task distribution {
     doLast {
-        println "task2===========We build the zip with version=$version"
+        println "task2 gradle =========== We build the zip with version=$version"
     }
 }
 
 //IncrementalReverseTask
 task release(dependsOn: 'distribution') {
     doLast {
-        println 'task2===========We release now'
+        println 'task2 gradle ===========We release now'
     }
 }
 
-
-
-
 task afterAssembleDebug() {
     doLast {
-        println '222doLast afterAssembleDebug'
+        println 'task2 gradle 222doLast afterAssembleDebug'
     }
 }

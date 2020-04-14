@@ -1,32 +1,33 @@
 //gradle生命周期，初始化，配置和执行
 //执行命令 项目根目录执行./gradlew 模块:task
 //如执行app中的hello任务，则执行./gradlew app:hello
+
 task hello {
 //    println "配置开始，执行任务hello"
     doFirst {
-        println "task1===========执行开始之前, 执行任务hello"
+        println "task1 gradle=========== doFirst, run task hello"
     }
     //执行阶段，只有在运行该任务时，才会启动
     doLast {
-        println "task1===========执行开始之后，执行任务hello"
+        println "task1 gradle===========doLast， run task hello"
     }
 }
 
 task hello1 {
     doFirst {
-        println "task1===========执行hello1 first"
+        println "task1 gradle===========run hello1 first"
     }
     doLast {
-        println "task1===========执行hello1 last"
+        println "task1 gradle===========run hello1 last"
     }
 }
 
 task hello2 {
     doFirst {
-        println "task1===========执行hello2 first"
+        println "task1 gradle ===========run hello2 first"
     }
     doLast {
-        println "task1===========执行hello2 last"
+        println "task1 gradle ===========run hello2 last"
     }
 }
 //执行hello1时，先执行hello2
@@ -35,7 +36,7 @@ task hello2 {
 //依赖执行的第二种方法
 task hello3(dependsOn: hello1) {
     doLast {
-        println '执行hello3'
+        println 'run hello3 task '
     }
 }
 
@@ -44,7 +45,7 @@ task hello4 {
         if (System.console() != null) {
             System.console().readPassword("\nKeystore password: ")
         } else {
-            println "task1===========获取不到控制台实例"
+            println "task1 gradle===========can not get System.console() "
         }
     }
 }
@@ -133,15 +134,96 @@ task hello15(dependsOn: ['hello1', 'hello2']) {
     }
 }
 
+//task afterAssembleDebug() {
+//    doFirst {
+//        println ' afterAssembleDebug  doFirst '
+////        project.
+//    }
+//    doLast {
+//        println '111doLast afterAssembleDebug doLast'
+//        println "task1 gradle =========== We build the zip with version="+rootProject.allprojects {
+//            println 'Show subproject   : '+it.name
+//        }
+//    }
+//}
 
-
-task afterAssembleDebug() {
+task custsTask() {
+    doFirst {
+        println ' afterAssembleDebug  doFirst '
+//        project.
+    }
     doLast {
-        println '111doLast afterAssembleDebug'
+        println '111doLast afterAssembleDebug doLast'
+        println "task1 gradle =========== We build the zip with version="+rootProject.allprojects {
+            println 'Show subproject   : '+it.name
+            if ( !it.hasProperty('android')) return
+            println("---------JJJJJJJ-----------------")
+            it.metaPropertyValues
+            def keysets =it.metaPropertyValues
+            def count = keysets.size()
+            for (int i = 0; i <count ; i++) {
+//                println 'Show properties key    : '+keysets.get(i).name
+                if (keysets.get(i).name.toString().equals('configurations')){
+                    def getconfigurations = keysets.get(i)
+                    println 'Show properties configurations     : '+getconfigurations.properties
+                }
+
+            }
+//            def androidtype = it.getAt('android')
+//            androidtype.getProperties().findAll {
+//                println 'Show androidtype pro   : '+it.name
+//            }
+            //            it.android.libraryVariants.all { variant ->
+//                println("---------JJJJJJJ-----------------")
+//                final ArtifactCollection manifests = variant.getVariantData().getScope().getArtifactCollection(
+//                        AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+//                        AndroidArtifacts.ArtifactScope.ALL,
+//                        AndroidArtifacts.ArtifactType.MANIFEST)
+//                Set<ResolvedArtifactResult> artifacts = manifests.getArtifacts()
+//                for (ResolvedArtifactResult artifact : artifacts) {
+//                    println("Show  project : "+project.name+"__ use library : "+getArtifactName(artifact))
+//                    println("Show  AndroidMainfest path  : "+artifact.getFile().absolutePath)
+////            writeFile(artifact.getFile(), getArtifactName(artifact))
+//                }
+//                ArtifactCollection library_aar = variant.getVariantData().getScope().getArtifactCollection(
+//                        AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+//                        AndroidArtifacts.ArtifactScope.ALL,
+//                        AndroidArtifacts.ArtifactType.AAR)
+//                artifacts = library_aar.getArtifacts()
+//                for (ResolvedArtifactResult artifact : artifacts) {
+//                    println("Show  project : "+project.name+"__ use aar library : "+getArtifactName(artifact))
+//                    println("Show library path  : "+artifact.getFile().absolutePath)
+////            writeFile(artifact.getFile(), getArtifactName(artifact))
+//                }
+//                ArtifactCollection library_jar = variant.getVariantData().getScope().getArtifactCollection(
+//                        AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+//                        AndroidArtifacts.ArtifactScope.ALL,
+//                        AndroidArtifacts.ArtifactType.JAR)
+//                artifacts = library_jar .getArtifacts()
+//                for (ResolvedArtifactResult artifact : artifacts) {
+//                    println("Show  project : "+project.name+"__ use jar library : "+getArtifactName(artifact))
+//                    println("Show library path  : "+artifact.getFile().absolutePath)
+////            writeFile(artifact.getFile(), getArtifactName(artifact))
+//                }
+//                println("-----------EEEE-------------------")
+//            }
+        }
+
+
     }
 }
 
-
+//class Merge extends DefaultTask {
+//    @TaskAction
+//    def merge() {
+//        // merge properties
+//    }
+//}
+//
+//task afterAssembleDebug(type: Merge) {
+//    inputs.files 'myInputFile1', 'myInputFile2'
+//    outputs.file 'myOutputFile'
+//}
 
 
 

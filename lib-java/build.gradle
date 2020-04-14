@@ -1,4 +1,4 @@
-println 'lib-java中执行的代码'
+println '@ lib-java subproject (module)'
 apply plugin: 'java-library'
 
 buildscript {

@@ -1,50 +1,65 @@
-println 'settings中执行的代码'
+println 'at setting gradle start'
+println 'gradle addListener '
+gradle.addListener(new TaskExecutionListener() {
+    @Override
+    void beforeExecute(Task task) {
+//        println("beforeExecute Show project : "+project) <-- Could not get unknown property 'project' for settings
+        def taskmodule = task.project
+        println("Show task group  : "+taskmodule)
+        def taskname = task.name
+        println("Show task name : "+taskname)
+    }
 
+    @Override
+    void afterExecute(Task task, TaskState state) {
+//        println("afterExecute Show project : "+project)<-- Could not get unknown property 'project' for settings
+    }
+})
+println 'gradle addBuildListener '
 gradle.addBuildListener(new BuildListener() {
     void buildStarted(Gradle var1) {
-        println '开始构建'
+        println 'build Started'
     }
     void settingsEvaluated(Settings var1) {
-        println 'settings评估完成（settins.gradle中代码执行完毕）'
         // var1.gradle.rootProject 这里访问Project对象时会报错，还未完成Project的初始化
+        println 'settings Evaluated '
+        def  keysets =var1.properties.keySet()
+        keysets .findAll {
+
+        }
+        println 'Show rootDir : '+var1.properties.rootDir
+        println 'Show gradleHome : '+var1.properties.startParameter.properties.gradleHomeDir
+        println 'Show gradleUserHomeDir : '+var1.properties.startParameter.properties.gradleUserHomeDir
+        println 'Show currentDir : '+var1.properties.startParameter.properties.currentDir
     }
     void projectsLoaded(Gradle var1) {
-        println '项目结构加载完成（初始化阶段结束）'
-        println '初始化结束，可访问根项目：' + var1.gradle.rootProject
+        println 'projects Loaded -- project init pass '
+        println 'Show rootProject ：' + var1.gradle.rootProject
     }
     void projectsEvaluated(Gradle var1) {
-        println '所有项目评估完成（配置阶段结束）'
+        println 'projects  Evaluated'
     }
     void buildFinished(BuildResult var1) {
-        println '构建结束 '
+        println 'buildFinished '
     }
 })
 
 long beginOfSetting = System.currentTimeMillis()
-
-
 gradle.projectsLoaded {
-    println '初始化阶段，耗时：' + (System.currentTimeMillis() - beginOfSetting) + 'ms'
+    println '@setting gradle.projectsLoaded Start projects Loaded init ， time ：' + (System.currentTimeMillis() - beginOfSetting) + 'ms'
     gradle.rootProject.afterEvaluate {
-        println 'gradle.rootProject.afterEvaluate，耗时：' + (System.currentTimeMillis() - beginOfSetting) + 'ms'
+        println 'gradle.rootProject.afterEvaluate，time ：' + (System.currentTimeMillis() - beginOfSetting) + 'ms'
         println 'rootProject evaluated'
     }
 }
 
 gradle.beforeProject { project ->
-    println 'apply plugin java for ' + project
+    println '@setting gradle.beforeProject  apply plugin java for ' + project
+    def keyset =project.properties.keySet()
+    keyset.findAll {
+//        println 'Show key  : '+it.toString()
+    }
 //    project.apply plugin: 'java'
 }
-
-//allprojects {
-//    beforeEvaluate { project ->
-//        println 'apply plugin java for ' + project
-//        project.apply plugin: 'java'
-//    }
-//}
-
-
-
-
 
 include ':app', ':lib-java'
